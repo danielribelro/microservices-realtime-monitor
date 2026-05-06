@@ -1,0 +1,21 @@
+# .NET Core
+bin/
+obj/
+publish/
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.sln.doccache
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.doccache
+
+# Operating System Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
