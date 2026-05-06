@@ -27,9 +27,3 @@ Este projeto foi construído para demonstrar a integração de fluxos de dados e
 - **CORS Policy**: Configuração de segurança para permitir tráfego entre portas distintas.
 - **Performance de Memória**: Implementação de `shallowRef` no Vue para lidar com objetos complexos do Chart.js, evitando estouro de pilha (call stack).
 - **UX Reativa**: Sistema de logs que rola automaticamente e badges que pulsam de acordo com o status do serviço.
-
-## 🏁 Como Rodar o Projeto
-
-### 1. Clonar o Repositório
-```bash
-git clone [https://github.com/seu-usuario/microservices-realtime-monitor.git](https://github.com/seu-usuario/microservices-realtime-monitor.git)
