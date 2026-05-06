@@ -2,9 +2,6 @@
 
 Um painel de monitoramento em tempo real com estética Cyberpunk, desenvolvido para visualizar a saúde e a latência de uma arquitetura de microsserviços distribuídos.
 
-![Dashboard Preview](https://github.com/seu-usuario/seu-repositorio/blob/main/caminho-da-sua-imagem.png?raw=true)
-> *Dica: Após subir o projeto, arraste o print do seu dashboard para dentro do README no GitHub para gerar o link da imagem.*
-
 ## 🧪 Sobre o Projeto
 
 Este projeto foi construído para demonstrar a integração de fluxos de dados em tempo real entre um ecossistema **Backend .NET** e um **Frontend reativo em Vue.js 3**, utilizando WebSockets para garantir atualização instantânea sem a necessidade de refresh.
