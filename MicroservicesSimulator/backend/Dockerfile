@@ -1,22 +1,23 @@
 # Estágio de Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 
-# Copia o arquivo de projeto e restaura as dependências
-COPY *.csproj ./
+# Copia tudo para o container
+COPY . .
+
+# Restaura e publica o projeto apontando para o arquivo de projeto atual
 RUN dotnet restore
-
-# Copia o restante dos arquivos e compila
-COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o /app/publish
 
 # Estágio de Execução
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/out .
+COPY --from=build /app/publish .
 
-# Expõe a porta que o Render vai usar
-ENV ASPNETCORE_URLS=http://+:5003
-EXPOSE 5003
+# Variáveis de ambiente para o Render
+ENV ASPNETCORE_URLS=http://+:10000
+EXPOSE 10000
 
-ENTRYPOINT ["dotnet", "MicroservicesSimulator.dll"]
+# O comando final tenta rodar o executável principal
+# Se o seu projeto mudar de nome, o "*" ajuda a encontrar a DLL correta
+ENTRYPOINT ["sh", "-c", "dotnet $(ls *.dll | head -n 1)"]
