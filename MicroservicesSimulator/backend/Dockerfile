@@ -5,9 +5,10 @@ WORKDIR /src
 # Copia tudo para o container
 COPY . .
 
-# Restaura e publica o projeto apontando para o arquivo de projeto atual
-RUN dotnet restore
-RUN dotnet publish -c Release -o /app/publish
+# Restaura e publica o projeto ESPECIFICANDO o arquivo .csproj
+# (Ajustei para o nome que aparece na sua pasta)
+RUN dotnet restore "MicroservicesSimulator.csproj"
+RUN dotnet publish "MicroservicesSimulator.csproj" -c Release -o /app/publish
 
 # Estágio de Execução
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
@@ -18,6 +19,4 @@ COPY --from=build /app/publish .
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
-# O comando final tenta rodar o executável principal
-# Se o seu projeto mudar de nome, o "*" ajuda a encontrar a DLL correta
-ENTRYPOINT ["sh", "-c", "dotnet $(ls *.dll | head -n 1)"]
+ENTRYPOINT ["dotnet", "MicroservicesSimulator.dll"]
