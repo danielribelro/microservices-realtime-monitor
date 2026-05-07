@@ -3,18 +3,25 @@ using MicroservicesSimulator.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// --- CONFIGURAÇÃO DE PORTA PARA HOSPEDAGEM ---
+// O Render e outros serviços definem uma porta automática na variável de ambiente "PORT"
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5003";
+
 // --- SERVIÇOS ---
 
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<StatusSimulator>();
 
-// Configure a política com nome para garantir a persistência
+// Configuração de CORS atualizada para aceitar Localhost e Produção
 builder.Services.AddCors(options => {
     options.AddPolicy("VueCorsPolicy", policy => {
-        policy.WithOrigins("http://localhost:5173") 
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        policy.SetIsOriginAllowed(origin => {
+            // Permite localhost e qualquer URL da vercel.app (onde seu front ficará)
+            return origin.Contains("localhost") || origin.Contains("vercel.app");
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
 });
 
@@ -22,12 +29,11 @@ var app = builder.Build();
 
 // --- MIDDLEWARE ---
 
-// Use a política que você acabou de definir acima
 app.UseCors("VueCorsPolicy");
 
-app.MapGet("/", () => "API do Simulador de Microsserviços está ativa. Ligue-se ao SignalR no /statusHub.");
+app.MapGet("/", () => "🚀 API do Simulador de Microsserviços está ativa. Conecte-se ao SignalR no /statusHub.");
 
 app.MapHub<MonitoringHub>("/statusHub");
 
-// APENAS UM app.Run aqui, definindo a porta 5003
-app.Run("http://localhost:5003");
+// IMPORTANTE: Mudamos de localhost fixo para 0.0.0.0 para que o servidor externo consiga acessar
+app.Run($"http://0.0.0.0:{port}");
