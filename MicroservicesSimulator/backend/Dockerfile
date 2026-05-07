@@ -1,26 +1,26 @@
-# Estágio de Build
+# ESTÁGIO 1: Build (Onde a mágica da compilação acontece)
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Copia TUDO da pasta atual para dentro do container
+# 1. Copia os arquivos da sua pasta backend para dentro do container
 COPY . ./
 
-# Restaura as dependências focando no arquivo de projeto
+# 2. Restaura as dependências (Aqui ele baixa os pacotes NuGet)
 RUN dotnet restore "MicroservicesSimulator.csproj"
 
-# Compila o projeto
+# 3. Publica o projeto (Cria os arquivos prontos para rodar)
 RUN dotnet publish "MicroservicesSimulator.csproj" -c Release -o out
 
-# Estágio de Execução
+# ESTÁGIO 2: Execução (Onde o servidor realmente roda)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
-# Copia apenas o resultado da compilação do estágio anterior
+# 4. Pega apenas o que foi compilado no estágio anterior (fica bem leve)
 COPY --from=build /app/out .
 
-# Configurações de porta para o Render
+# 5. Configurações essenciais para o Render
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
-# Comando para rodar a aplicação
+# 6. Inicia a DLL do seu projeto
 ENTRYPOINT ["dotnet", "MicroservicesSimulator.dll"]
