@@ -1,22 +1,26 @@
 # Estágio de Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+WORKDIR /app
 
-# Copia tudo para o container
-COPY . .
+# Copia TUDO da pasta atual para dentro do container
+COPY . ./
 
-# Restaura e publica o projeto ESPECIFICANDO o arquivo .csproj
-# (Ajustei para o nome que aparece na sua pasta)
+# Restaura as dependências focando no arquivo de projeto
 RUN dotnet restore "MicroservicesSimulator.csproj"
-RUN dotnet publish "MicroservicesSimulator.csproj" -c Release -o /app/publish
+
+# Compila o projeto
+RUN dotnet publish "MicroservicesSimulator.csproj" -c Release -o out
 
 # Estágio de Execução
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/publish .
 
-# Variáveis de ambiente para o Render
+# Copia apenas o resultado da compilação do estágio anterior
+COPY --from=build /app/out .
+
+# Configurações de porta para o Render
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
+# Comando para rodar a aplicação
 ENTRYPOINT ["dotnet", "MicroservicesSimulator.dll"]
